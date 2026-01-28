@@ -179,6 +179,15 @@ export default function BuildingPage() {
     pendingScrollRef.current = { tab: nextTab, sectionId }
   }
   
+  // Reviews state
+  const [reviews, setReviews] = useState<Review[]>([])
+  const [reviewsData, setReviewsData] = useState<{ count: number, averageRating: number, distribution: Record<number, number> }>({ count: 0, averageRating: 0, distribution: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 } })
+  const [showReviewForm, setShowReviewForm] = useState(false)
+  const [reviewForm, setReviewForm] = useState({ rating: 5, title: '', review: '', pros: '', cons: '', lived_here: false, years_lived: '', author_name: '', email: '', phone: '', website: '' })
+  const [submittingReview, setSubmittingReview] = useState(false)
+  const [reviewError, setReviewError] = useState('')
+  const [votedReviews, setVotedReviews] = useState<Set<string>>(new Set())
+
   // IMPORTANT: Hooks must run on every render. Keep all hook calls above any
   // conditional returns (loading/error screens). A production crash we saw
   // (React error #310) was caused by a hook (useMemo) being executed only after
@@ -208,7 +217,7 @@ export default function BuildingPage() {
       const qs = new URLSearchParams(window.location.search)
       const t = (qs.get('tab') || '').toLowerCase()
       const sectionId = qs.get('section') || undefined
-      const allowed: Tab[] = ['overview', 'violations', 'complaints', 'timeline', 'landlord', 'permits', 'sales', 'neighborhood']
+      const allowed: Tab[] = ['overview', 'violations', 'complaints', 'timeline', 'landlord', 'permits', 'sales', 'neighborhood', 'reviews']
       if (allowed.includes(t as Tab)) {
         setTab(t as Tab)
         pendingScrollRef.current = { tab: t as Tab, sectionId }
@@ -254,7 +263,56 @@ export default function BuildingPage() {
     if (bbl) load()
   }, [bbl])
   
+  // Fetch reviews
+  useEffect(() => {
+    async function loadReviews() {
+      try {
+        const res = await fetch(`/api/reviews?bbl=${bbl}`)
+        const json = await res.json()
+        if (!json.error) {
+          setReviews(json.reviews || [])
+          setReviewsData({ count: json.count, averageRating: json.averageRating, distribution: json.distribution })
+        }
+      } catch (e) { console.error('Failed to load reviews', e) }
+    }
+    if (bbl) loadReviews()
+  }, [bbl])
   
+  const submitReview = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmittingReview(true)
+    setReviewError('')
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bbl, ...reviewForm })
+      })
+      const json = await res.json()
+      if (json.error) {
+        setReviewError(json.error)
+      } else {
+        setReviews([json.review, ...reviews])
+        setReviewsData(prev => ({ ...prev, count: prev.count + 1, averageRating: ((prev.averageRating * prev.count) + reviewForm.rating) / (prev.count + 1) }))
+        setShowReviewForm(false)
+        setReviewForm({ rating: 5, title: '', review: '', pros: '', cons: '', lived_here: false, years_lived: '', author_name: '', email: '', phone: '', website: '' })
+      }
+    } catch { setReviewError('Failed to submit review') }
+    finally { setSubmittingReview(false) }
+  }
+  
+  const voteHelpful = async (reviewId: string) => {
+    if (votedReviews.has(reviewId)) return
+    try {
+      await fetch('/api/reviews/helpful', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewId })
+      })
+      setVotedReviews(new Set([...Array.from(votedReviews), reviewId]))
+      setReviews(reviews.map(r => r.id === reviewId ? { ...r, helpful_count: r.helpful_count + 1 } : r))
+    } catch (e) { console.error('Vote failed', e) }
+  }
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
