@@ -310,8 +310,8 @@ export default function HomePage() {
                       </>
                     ) : (
                       <>
-                        <span className="hidden sm:inline">Check Building</span>
-                        <span className="inline sm:hidden">Check</span>
+                       <span className="!hidden sm:!inline">Check Building</span>
+                      <span className="!inline sm:!hidden">Check</span>
                         <ChevronRight className="w-5 h-5" />
                       </>
                     )}
