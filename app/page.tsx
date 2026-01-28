@@ -311,10 +311,8 @@ export default function HomePage() {
                     ) : (
                       <>
                         <span className="hidden sm:inline">Check Building</span>
-                        <span className="sm:hidden">Check</span>
-                        <span className="cta-arrow">
-                          <ChevronRight className="w-5 h-5" />
-                        </span>
+                        <span className="inline sm:hidden">Check</span>
+                        <ChevronRight className="w-5 h-5" />
                       </>
                     )}
                   </button>
