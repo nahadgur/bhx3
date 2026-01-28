@@ -490,7 +490,7 @@ export default function BuildingPage() {
             </button>
           ))}
         </div>
-
+        
         {/* OVERVIEW TAB */}
         {tab === 'overview' && (
           <div className="space-y-6 animate-fade-in">
