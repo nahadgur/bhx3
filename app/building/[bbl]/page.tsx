@@ -904,7 +904,7 @@ export default function BuildingPage() {
           </div>
         )}
 
-        {/* NEIGHBORHOOD TAB - ENHANCED WITH 55+ DATA SOURCES */}
+      {/* NEIGHBORHOOD TAB - ENHANCED WITH 55+ DATA SOURCES */}
         {tab === 'neighborhood' && (
           <div className="space-y-6 animate-fade-in">
             {/* Neighborhood BHX Score */}
@@ -915,22 +915,22 @@ export default function BuildingPage() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center">
-                  <div className="text-2xl mb-1">🚔</div>
+                  <div className="flex items-center justify-center mb-1"><ShieldAlert className="text-red-400" size={24} /></div>
                   <div className="text-lg font-bold" style={{ color: data.crime?.score >= 70 ? '#10b981' : data.crime?.score >= 50 ? '#f59e0b' : '#ef4444' }}>{data.crime?.level || 'N/A'}</div>
                   <div className="text-xs text-[var(--text-muted)]">Crime Level</div>
                 </div>
                 <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center">
-                  <div className="text-2xl mb-1">🔫</div>
+                  <div className="flex items-center justify-center mb-1"><Shield className="text-red-400" size={24} /></div>
                   <div className="text-lg font-bold" style={{ color: data.shootings?.score >= 70 ? '#10b981' : data.shootings?.score >= 50 ? '#f59e0b' : '#ef4444' }}>{data.shootings?.level || 'N/A'}</div>
                   <div className="text-xs text-[var(--text-muted)]">Violent Crime</div>
                 </div>
                 <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center">
-                  <div className="text-2xl mb-1">🚶</div>
+                  <div className="flex items-center justify-center mb-1"><User className="text-yellow-400" size={24} /></div>
                   <div className="text-lg font-bold" style={{ color: data.trafficSafety?.score >= 70 ? '#10b981' : data.trafficSafety?.score >= 50 ? '#f59e0b' : '#ef4444' }}>{data.trafficSafety?.level || 'N/A'}</div>
                   <div className="text-xs text-[var(--text-muted)]">Pedestrian Safety</div>
                 </div>
                 <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center">
-                  <div className="text-2xl mb-1">💧</div>
+                  <div className="flex items-center justify-center mb-1"><Droplet className="text-blue-400" size={24} /></div>
                   <div className="text-lg font-bold" style={{ color: data.flood?.floodRisk === 'LOW' ? '#10b981' : data.flood?.floodRisk === 'MODERATE' ? '#f59e0b' : '#ef4444' }}>{data.flood?.floodRisk || 'LOW'}</div>
                   <div className="text-xs text-[var(--text-muted)]">Flood Risk</div>
                 </div>
@@ -940,7 +940,7 @@ export default function BuildingPage() {
             {/* HUD Fair Market Rent - NEW! */}
             {data.rentFairness?.hudFMR && (
               <div className="card p-6 border-2 border-blue-500/30 bg-gradient-to-r from-blue-500/5 to-cyan-500/5">
-                <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">💰</span> Rent Fairness Meter (HUD FY2025)</h3>
+                <h3 className="font-bold mb-4 flex items-center gap-2"><Wallet className="text-green-400" size={20} /> Rent Fairness Meter (HUD FY2025)</h3>
                 <p className="text-sm text-[var(--text-muted)] mb-4">Compare asking rent to HUD Fair Market Rent benchmarks (40th percentile of NYC area rents)</p>
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                   <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center">
@@ -970,7 +970,7 @@ export default function BuildingPage() {
 
             {/* Violent Crime (Shootings) - NEW! */}
             <div className="card p-6">
-              <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">🔫</span> Shooting Incidents (500m, 3 years)</h3>
+              <h3 className="font-bold mb-4 flex items-center gap-2"><Shield className="text-red-400" size={20} /> Shooting Incidents (500m, 3 years)</h3>
               <div className="grid sm:grid-cols-4 gap-4 mb-4">
                 <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center">
                   <div className="text-2xl font-bold" style={{ color: data.shootings?.total === 0 ? '#10b981' : data.shootings?.total <= 2 ? '#f59e0b' : '#ef4444' }}>{data.shootings?.total || 0}</div>
@@ -989,12 +989,12 @@ export default function BuildingPage() {
                   <div className="text-xs text-[var(--text-muted)]">Risk Level</div>
                 </div>
               </div>
-              {data.shootings?.total === 0 && <p className="text-sm text-green-400">✓ No shooting incidents nearby in the last 3 years</p>}
+              {data.shootings?.total === 0 && <p className="text-sm text-green-400"><CheckCircle className="inline mr-1" size={14} /> No shooting incidents nearby in the last 3 years</p>}
             </div>
 
             {/* Pedestrian Safety (Vision Zero) - NEW! */}
             <div className="card p-6">
-              <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">🚶</span> Pedestrian & Traffic Safety (300m, 2 years)</h3>
+              <h3 className="font-bold mb-4 flex items-center gap-2"><User className="text-yellow-400" size={20} /> Pedestrian & Traffic Safety (300m, 2 years)</h3>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-4">
                 <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center">
                   <div className="text-2xl font-bold">{data.trafficSafety?.crashes || 0}</div>
@@ -1022,7 +1022,7 @@ export default function BuildingPage() {
 
             {/* Crime */}
             <div className="card p-6" id="section-crime">
-              <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">🚔</span> All Crime (500m radius, last year)</h3>
+              <h3 className="font-bold mb-4 flex items-center gap-2"><ShieldAlert className="text-red-400" size={20} /> All Crime (500m radius, last year)</h3>
               <div className="grid sm:grid-cols-3 gap-4 mb-4">
                 <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center"><div className="text-2xl font-bold">{data.crime?.total || 0}</div><div className="text-xs text-[var(--text-muted)]">Total Incidents</div></div>
                 <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center"><div className="text-2xl font-bold text-red-400">{data.crime?.violent || 0}</div><div className="text-xs text-[var(--text-muted)]">Violent Crimes</div></div>
@@ -1043,7 +1043,7 @@ export default function BuildingPage() {
             {/* Noise Complaints - NEW! */}
             {data.noise && (
               <div className="card p-6" id="section-noise">
-                <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">🔊</span> Noise Complaints (3 years)</h3>
+                <h3 className="font-bold mb-4 flex items-center gap-2"><Volume2 className="text-indigo-400" size={20} /> Noise Complaints (3 years)</h3>
                 <div className="grid sm:grid-cols-2 gap-4 mb-4">
                   <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center">
                     <div className="text-2xl font-bold" style={{ color: data.noise.level === 'LOW' ? '#10b981' : data.noise.level === 'MODERATE' ? '#f59e0b' : '#ef4444' }}>{data.noise.total || 0}</div>
@@ -1069,7 +1069,7 @@ export default function BuildingPage() {
 
             {/* Transit & accessibility */}
             <div className="card p-6" id="section-transit">
-              <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">🚇</span> Transit & accessibility</h3>
+              <h3 className="font-bold mb-4 flex items-center gap-2"><Train className="text-cyan-400" size={20} /> Transit & accessibility</h3>
               <p className="text-sm text-[var(--text-secondary)]">
                 Transit scoring is coming soon. For now, use the Building Health X report to sanity-check the building itself (heat/hot water, pests, noise,
                 safety hazards) and treat commute details as a separate decision layer.
@@ -1079,7 +1079,7 @@ export default function BuildingPage() {
             {/* Pest Control BHX Score */}
             {data.pests && (
               <div className="card p-6" id="section-pest-control">
-                <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">🐛</span> Pest Control BHX Score</h3>
+                <h3 className="font-bold mb-4 flex items-center gap-2"><Bug className="text-green-400" size={20} /> Pest Control BHX Score</h3>
                 <div className="grid sm:grid-cols-4 gap-4 mb-4">
                   <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center">
                     <div className="text-2xl font-bold" style={{ color: data.pests.score >= 70 ? '#10b981' : data.pests.score >= 50 ? '#f59e0b' : '#ef4444' }}>{data.pests.score}</div>
@@ -1107,7 +1107,7 @@ export default function BuildingPage() {
             {/* Restaurants & Food Safety - NEW! */}
             {data.restaurants && (
               <div className="card p-6">
-                <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">🍽️</span> Nearby Restaurant Inspections (100m)</h3>
+                <h3 className="font-bold mb-4 flex items-center gap-2"><UtensilsCrossed className="text-orange-400" size={20} /> Nearby Restaurant Inspections (100m)</h3>
                 <div className="grid sm:grid-cols-4 gap-4 mb-4">
                   <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center">
                     <div className="text-2xl font-bold">{data.restaurants.nearbyCount}</div>
@@ -1133,7 +1133,7 @@ export default function BuildingPage() {
             {/* Cooling Towers (Legionella) - NEW! */}
             {data.coolingTowers && (
               <div className="card p-6">
-                <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">🏭</span> Cooling Towers (Legionella Risk)</h3>
+                <h3 className="font-bold mb-4 flex items-center gap-2"><Factory className="text-gray-400" size={20} /> Cooling Towers (Legionella Risk)</h3>
                 <div className={`p-4 rounded-xl ${data.coolingTowers.hasTower ? 'bg-yellow-500/10 border border-yellow-500/30' : 'bg-green-500/10 border border-green-500/30'}`}>
                   <div className="flex items-center justify-between">
                     <span>Cooling Tower Present</span>
@@ -1152,7 +1152,7 @@ export default function BuildingPage() {
             {/* Tax Exemptions & Rent Stabilization - NEW! */}
             {data.taxExemptions && (
               <div className="card p-6">
-                <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">🏛️</span> Tax Exemptions & Rent Stabilization</h3>
+                <h3 className="font-bold mb-4 flex items-center gap-2"><Building2 className="text-blue-400" size={20} /> Tax Exemptions & Rent Stabilization</h3>
                 <div className="grid sm:grid-cols-3 gap-4 mb-4">
                   <div className={`p-3 rounded-xl ${data.taxExemptions.has421a ? 'bg-blue-500/10 border border-blue-500/30' : 'bg-[var(--bg-hover)]'}`}>
                     <div className="flex items-center justify-between">
@@ -1174,14 +1174,14 @@ export default function BuildingPage() {
                   </div>
                 </div>
                 {data.taxExemptions.note && <p className="text-sm text-blue-400 mb-2">{data.taxExemptions.note}</p>}
-                {data.taxExemptions.exemptionExpiration && <p className="text-sm text-yellow-400">⚠️ Exemption expires: {data.taxExemptions.exemptionExpiration} - rent may increase after</p>}
+                {data.taxExemptions.exemptionExpiration && <p className="text-sm text-yellow-400"><AlertTriangle className="inline mr-1" size={14} /> Exemption expires: {data.taxExemptions.exemptionExpiration} - rent may increase after</p>}
               </div>
             )}
 
             {/* Financial Health - NEW! */}
             {data.financialHealth && (
               <div className="card p-6">
-                <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">💰</span> Building Financial Health</h3>
+                <h3 className="font-bold mb-4 flex items-center gap-2"><Wallet className="text-green-400" size={20} /> Building Financial Health</h3>
                 <div className="grid sm:grid-cols-3 gap-4 mb-4">
                   <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center">
                     <div className="text-2xl font-bold" style={{ color: data.financialHealth.score >= 70 ? '#10b981' : data.financialHealth.score >= 50 ? '#f59e0b' : '#ef4444' }}>{data.financialHealth.score}</div>
@@ -1202,7 +1202,7 @@ export default function BuildingPage() {
 
             {/* Flood & Hurricane */}
             <div className="card p-6">
-              <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">💧</span> Flood & Hurricane Risk</h3>
+              <h3 className="font-bold mb-4 flex items-center gap-2"><Droplet className="text-blue-400" size={20} /> Flood & Hurricane Risk</h3>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className={`p-4 rounded-xl ${data.flood?.inFloodZone ? 'bg-red-500/10 border border-red-500/30' : 'bg-green-500/10 border border-green-500/30'}`}>
                   <div className="flex items-center justify-between">
@@ -1223,7 +1223,7 @@ export default function BuildingPage() {
 
             {/* Parks & Green Space */}
             <div className="card p-6">
-              <h3 className="font-bold mb-4 flex items-center gap-2"><span className="text-xl">🌳</span> Parks & Green Space</h3>
+              <h3 className="font-bold mb-4 flex items-center gap-2"><Trees className="text-green-400" size={20} /> Parks & Green Space</h3>
               <div className="grid sm:grid-cols-3 gap-4 mb-4">
                 <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center"><div className="text-2xl font-bold text-green-400">{data.parks?.count || 0}</div><div className="text-xs text-[var(--text-muted)]">Parks Nearby</div></div>
                 <div className="p-3 bg-[var(--bg-hover)] rounded-xl text-center"><div className="text-2xl font-bold text-emerald-400">{data.parks?.totalAcres || 0}</div><div className="text-xs text-[var(--text-muted)]">Total Acres</div></div>
@@ -1239,214 +1239,6 @@ export default function BuildingPage() {
                   ))}
                 </div>
               )}
-            </div>
-          </div>
-        )}
-
-        {/* REVIEWS TAB */}
-        {tab === 'reviews' && (
-          <div className="space-y-6 animate-fade-in">
-            {/* Reviews Summary */}
-            <div className="card p-6">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                <div className="flex items-center gap-6">
-                  <div className="text-center">
-                    <div className="text-5xl font-bold text-white">{reviewsData.averageRating.toFixed(1)}</div>
-                    <div className="flex items-center justify-center gap-1 mt-2">
-                      {[1,2,3,4,5].map(star => (
-                        <Star key={star} size={20} className={star <= Math.round(reviewsData.averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-[var(--text-muted)]'} />
-                      ))}
-                    </div>
-                    <div className="text-sm text-[var(--text-muted)] mt-1">{reviewsData.count} review{reviewsData.count !== 1 ? 's' : ''}</div>
-                  </div>
-                  <div className="space-y-1">
-                    {[5,4,3,2,1].map(rating => (
-                      <div key={rating} className="flex items-center gap-2">
-                        <span className="text-xs w-3">{rating}</span>
-                        <Star size={12} className="text-yellow-400 fill-yellow-400" />
-                        <div className="w-24 h-2 bg-[var(--border-primary)] rounded-full overflow-hidden">
-                          <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${reviewsData.count > 0 ? (reviewsData.distribution[rating] / reviewsData.count) * 100 : 0}%` }} />
-                        </div>
-                        <span className="text-xs text-[var(--text-muted)] w-6">{reviewsData.distribution[rating]}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <button onClick={() => setShowReviewForm(!showReviewForm)} className="px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-xl font-semibold flex items-center gap-2">
-                  <MessageSquare size={18} />
-                  Write a Review
-                </button>
-              </div>
-            </div>
-
-            {/* Review Form */}
-            {showReviewForm && (
-              <div className="card p-6 border-2 border-blue-500/30 animate-fade-in">
-                <h3 className="font-bold text-lg mb-6">Share Your Experience</h3>
-                <form onSubmit={submitReview} className="space-y-6">
-                  {/* Rating */}
-                  <div>
-                    <label className="block text-sm text-[var(--text-secondary)] mb-2">Your Rating *</label>
-                    <div className="flex items-center gap-2">
-                      {[1,2,3,4,5].map(star => (
-                        <button key={star} type="button" onClick={() => setReviewForm({...reviewForm, rating: star})} className="p-1 hover:scale-110 transition-transform">
-                          <Star size={32} className={star <= reviewForm.rating ? 'text-yellow-400 fill-yellow-400' : 'text-[var(--text-muted)] hover:text-yellow-400'} />
-                        </button>
-                      ))}
-                      <span className="ml-2 text-[var(--text-muted)]">{reviewForm.rating === 1 ? 'Terrible' : reviewForm.rating === 2 ? 'Poor' : reviewForm.rating === 3 ? 'Average' : reviewForm.rating === 4 ? 'Good' : 'Excellent'}</span>
-                    </div>
-                  </div>
-
-                  {/* Title */}
-                  <div>
-                    <label className="block text-sm text-[var(--text-secondary)] mb-2">Review Title</label>
-                    <input type="text" value={reviewForm.title} onChange={e => setReviewForm({...reviewForm, title: e.target.value})} placeholder="Summarize your experience" className="w-full p-3 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-blue-500/50" maxLength={100} />
-                  </div>
-
-                  {/* Review Text */}
-                  <div>
-                    <label className="block text-sm text-[var(--text-secondary)] mb-2">Your Review *</label>
-                    <textarea value={reviewForm.review} onChange={e => setReviewForm({...reviewForm, review: e.target.value})} placeholder="Tell others about your experience living here. What did you like? What could be better?" rows={4} className="w-full p-3 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-blue-500/50 resize-none" minLength={10} required />
-                  </div>
-
-                  {/* Pros & Cons */}
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm text-[var(--text-secondary)] mb-2">👍 Pros</label>
-                      <textarea value={reviewForm.pros} onChange={e => setReviewForm({...reviewForm, pros: e.target.value})} placeholder="What did you like?" rows={2} className="w-full p-3 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-blue-500/50 resize-none" />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-[var(--text-secondary)] mb-2">👎 Cons</label>
-                      <textarea value={reviewForm.cons} onChange={e => setReviewForm({...reviewForm, cons: e.target.value})} placeholder="What could be better?" rows={2} className="w-full p-3 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-blue-500/50 resize-none" />
-                    </div>
-                  </div>
-
-                  {/* Lived Here & Years */}
-                  <div className="flex flex-wrap items-center gap-6">
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input type="checkbox" checked={reviewForm.lived_here} onChange={e => setReviewForm({...reviewForm, lived_here: e.target.checked})} className="w-5 h-5 rounded border-[var(--border-primary)] bg-[var(--bg-card)] text-blue-500 focus:ring-blue-500" />
-                      <span className="text-[var(--text-secondary)]">I live/lived here</span>
-                    </label>
-                    {reviewForm.lived_here && (
-                      <select value={reviewForm.years_lived} onChange={e => setReviewForm({...reviewForm, years_lived: e.target.value})} className="p-2 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-lg text-white focus:outline-none focus:border-blue-500/50">
-                        <option value="">How long?</option>
-                        <option value="< 1 year">Less than 1 year</option>
-                        <option value="1-2 years">1-2 years</option>
-                        <option value="2-5 years">2-5 years</option>
-                        <option value="5+ years">5+ years</option>
-                      </select>
-                    )}
-                  </div>
-
-                  {/* Author Name */}
-                  <div>
-                    <label className="block text-sm text-[var(--text-secondary)] mb-2">Your Name (optional)</label>
-                    <input type="text" value={reviewForm.author_name} onChange={e => setReviewForm({...reviewForm, author_name: e.target.value})} placeholder="Anonymous" className="w-full sm:w-64 p-3 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-blue-500/50" maxLength={50} />
-                  </div>
-
-                  {/* Honeypot (hidden) */}
-                  <div className="sr-only" aria-hidden="true">
-                    <label htmlFor="website">Website</label>
-                    <input
-                      id="website"
-                      type="text"
-                      value={reviewForm.website}
-                      onChange={e => setReviewForm({ ...reviewForm, website: e.target.value })}
-                      autoComplete="off"
-                      tabIndex={-1}
-                    />
-                  </div>
-
-                  {/* Contact Details (Required but not displayed publicly) */}
-                  <div className="p-4 bg-[var(--bg-card)] rounded-xl border border-[var(--border-primary)]">
-                    <p className="text-sm text-[var(--text-secondary)] mb-4">
-                      📧 Contact details help verify reviews and reduce spam. They will <strong>never be displayed publicly</strong>, and we won’t reach out unless verification is needed.
-                    </p>
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm text-[var(--text-secondary)] mb-2">Email Address *</label>
-                        <input type="email" value={reviewForm.email} onChange={e => setReviewForm({...reviewForm, email: e.target.value})} placeholder="your@email.com" className="w-full p-3 bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-xl text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-blue-500/50" required />
-                      </div>
-                      <div>
-                        <label className="block text-sm text-[var(--text-secondary)] mb-2">Phone Number *</label>
-                        <input type="tel" value={reviewForm.phone} onChange={e => setReviewForm({...reviewForm, phone: e.target.value})} placeholder="(555) 123-4567" className="w-full p-3 bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-xl text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-blue-500/50" required />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Error & Submit */}
-                  {reviewError && <p className="text-red-400 text-sm">{reviewError}</p>}
-                  <div className="flex items-center gap-4">
-                    <button type="submit" disabled={submittingReview} className="px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 rounded-xl font-semibold flex items-center gap-2">
-                      {submittingReview ? 'Submitting...' : 'Submit Review'}
-                    </button>
-                    <button type="button" onClick={() => setShowReviewForm(false)} className="px-6 py-3 bg-[var(--border-primary)] hover:bg-[var(--border-secondary)] rounded-xl">Cancel</button>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {/* Reviews List */}
-            <div className="space-y-4">
-              {reviews.length === 0 ? (
-                <div className="card p-12 text-center">
-                  <MessageSquare className="w-16 h-16 text-[var(--text-muted)] mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">No reviews yet</h3>
-                  <p className="text-[var(--text-muted)] mb-6">Be the first to share your experience living in this building!</p>
-                  <button onClick={() => setShowReviewForm(true)} className="px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-xl font-semibold">Write a Review</button>
-                </div>
-              ) : reviews.map(review => (
-                <div key={review.id} className="card p-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="flex items-center">
-                          {[1,2,3,4,5].map(star => (
-                            <Star key={star} size={16} className={star <= review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-[var(--text-muted)]'} />
-                          ))}
-                        </div>
-                        {review.lived_here && (
-                          <span className="badge badge-green flex items-center gap-1">
-                            <CheckCircle size={12} /> Verified Resident
-                          </span>
-                        )}
-                      </div>
-                      {review.title && <h4 className="font-semibold text-lg">{review.title}</h4>}
-                    </div>
-                    <div className="text-right text-sm text-[var(--text-muted)]">
-                      <div>{review.author_name}</div>
-                      <div>{new Date(review.created_at).toLocaleDateString()}</div>
-                      {review.years_lived && <div className="text-xs">Lived here: {review.years_lived}</div>}
-                    </div>
-                  </div>
-                  
-                  <p className="text-[var(--text-primary)] mb-4 whitespace-pre-wrap">{review.review}</p>
-                  
-                  {(review.pros || review.cons) && (
-                    <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                      {review.pros && (
-                        <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                          <div className="text-xs text-green-400 font-semibold mb-1">👍 PROS</div>
-                          <p className="text-sm text-[var(--text-primary)]">{review.pros}</p>
-                        </div>
-                      )}
-                      {review.cons && (
-                        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                          <div className="text-xs text-red-400 font-semibold mb-1">👎 CONS</div>
-                          <p className="text-sm text-[var(--text-primary)]">{review.cons}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center gap-4 pt-3 border-t border-[var(--border-primary)]">
-                    <button onClick={() => voteHelpful(review.id)} disabled={votedReviews.has(review.id)} className={`flex items-center gap-2 text-sm ${votedReviews.has(review.id) ? 'text-blue-400' : 'text-[var(--text-muted)] hover:text-white'}`}>
-                      <ThumbsUp size={16} className={votedReviews.has(review.id) ? 'fill-blue-400' : ''} />
-                      Helpful ({review.helpful_count})
-                    </button>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         )}
