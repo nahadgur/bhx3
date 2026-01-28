@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { allRawPosts } from '@/content/blog'
+import { getAllPosts } from '@/lib/blog-utils'
 
 const baseUrl = 'https://www.buildinghealthx.com'
 
@@ -134,9 +134,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }))
 
   // Blog posts from your TypeScript files
-  const blogPages: MetadataRoute.Sitemap = allRawPosts.map((post) => ({
+  const blogPages: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: post.publishedAt ? new Date(post.publishedAt) : now,
+    lastModified: post.dateISO ? new Date(post.dateISO) : now,
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }))
