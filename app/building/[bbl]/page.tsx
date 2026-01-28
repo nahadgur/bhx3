@@ -579,35 +579,7 @@ export default function BuildingPage() {
               </div>
             </div>
 
-            {/* Resident Reviews Widget - Prominent */}
-            <div className="card p-6 border-2 border-yellow-500/30 bg-gradient-to-r from-yellow-500/5 to-orange-500/5 cursor-pointer hover:border-yellow-500/50 transition-colors" onClick={() => setTab('reviews')}>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-yellow-500/20 rounded-xl flex items-center justify-center">
-                    <Star className="text-yellow-400 fill-yellow-400" size={28} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg mb-1">What Do Residents Say?</h3>
-                    <div className="flex items-center gap-3">
-                      <span className="text-3xl font-bold">{reviewsData.averageRating > 0 ? reviewsData.averageRating.toFixed(1) : '—'}</span>
-                      <div className="flex items-center gap-0.5">
-                        {[1,2,3,4,5].map(star => (
-                          <Star key={star} size={18} className={star <= Math.round(reviewsData.averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-[var(--text-muted)]'} />
-                        ))}
-                      </div>
-                      <span className="text-[var(--text-muted)]">({reviewsData.count} review{reviewsData.count !== 1 ? 's' : ''})</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <button onClick={(e) => { e.stopPropagation(); setTab('reviews'); setShowReviewForm(true); }} className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg flex items-center gap-2">
-                    <MessageSquare size={16} />
-                    Write a Review
-                  </button>
-                  <ChevronRight className="text-[var(--text-muted)]" size={20} />
-                </div>
-              </div>
-            </div>
+      
 
             {/* Signals over time */}
             <div className="card p-6">
