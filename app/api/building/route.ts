@@ -130,6 +130,44 @@ function distance(lat1: number, lon1: number, lat2: number, lon2: number): numbe
     Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
+
+// --- Date helpers for Overview signals (charts) ---
+function parseDate(d: any): Date | null {
+  const dt = new Date(d)
+  return Number.isFinite(dt.getTime()) ? dt : null
+}
+
+function startOfDay(dt: Date) {
+  const x = new Date(dt)
+  x.setHours(0, 0, 0, 0)
+  return x
+}
+
+function fmtYYYYMMDD(dt: Date) {
+  const y = dt.getFullYear()
+  const m = String(dt.getMonth() + 1).padStart(2, '0')
+  const d = String(dt.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+function fmtYYYYMM(dt: Date) {
+  const y = dt.getFullYear()
+  const m = String(dt.getMonth() + 1).padStart(2, '0')
+  return `${y}-${m}`
+}
+
+function addDays(dt: Date, n: number) {
+  const x = new Date(dt)
+  x.setDate(x.getDate() + n)
+  return x
+}
+
+function addMonths(dt: Date, n: number) {
+  const x = new Date(dt)
+  x.setMonth(x.getMonth() + n)
+  return x
+}
+
 // ============================================
 // MAIN API - 45+ DATA SOURCES
 // ============================================
@@ -766,6 +804,112 @@ export async function GET(req: NextRequest) {
     // ========== SIMPLE NEIGHBORHOOD SCORE ==========
     const neighborhoodScore = Math.round((crimeScore * 0.5) + (inFloodZone ? 25 : 50) + (inHurricaneZone ? 25 : 50))
 
+    // ========== OVERVIEW SIGNALS (for Overview tab visuals) ==========
+    // Derive "signals" from 311 data we already fetched (sr311). The Overview UI expects:
+    //   data.signals.windows['30d'|'90d'|'1y'|'3y'] = { counts, deltas }
+    //   data.signals.series.daily30 / weekly90 / monthly36 = chart arrays
+    const sr311Events = (Array.isArray(sr311) ? sr311 : [])
+      .map((r: any) => {
+        const dt = parseDate(r.created_date)
+        if (!dt) return null
+        const key = classify311(r.complaint_type || '', r.descriptor || '')
+        return { dt, key }
+      })
+      .filter(Boolean) as { dt: Date; key: SignalKey }[]
+
+    function countWindow(days: number) {
+      const end = new Date()
+      const start = addDays(end, -days)
+      const prevEnd = start
+      const prevStart = addDays(start, -days)
+
+      const counts = { heat: 0, pests: 0, noise: 0, other: 0, total: 0 }
+      const prev = { heat: 0, pests: 0, noise: 0, other: 0, total: 0 }
+
+      for (const e of sr311Events) {
+        if (e.dt >= start && e.dt <= end) {
+          counts[e.key]++
+          counts.total++
+        } else if (e.dt >= prevStart && e.dt < prevEnd) {
+          prev[e.key]++
+          prev.total++
+        }
+      }
+
+      const deltas = {
+        heat: counts.heat - prev.heat,
+        pests: counts.pests - prev.pests,
+        noise: counts.noise - prev.noise,
+        other: counts.other - prev.other,
+        total: counts.total - prev.total,
+      }
+
+      return { counts, deltas }
+    }
+
+    // daily30: last 30 days by day
+    const daily30 = (() => {
+      const nowDay = startOfDay(new Date())
+      const start = addDays(nowDay, -29)
+      const map = new Map<string, any>()
+      for (let i = 0; i < 30; i++) {
+        const d = addDays(start, i)
+        map.set(fmtYYYYMMDD(d), { label: fmtYYYYMMDD(d), heat: 0, pests: 0, noise: 0, other: 0 })
+      }
+      for (const e of sr311Events) {
+        const k = fmtYYYYMMDD(startOfDay(e.dt))
+        const row = map.get(k)
+        if (row) row[e.key]++
+      }
+      return Array.from(map.values())
+    })()
+
+    // weekly90: last ~13 weeks across 90 days
+    const weekly90 = (() => {
+      const nowDay = startOfDay(new Date())
+      const start = addDays(nowDay, -90)
+      const buckets: any[] = []
+      for (let i = 0; i < 13; i++) buckets.push({ label: `W-${13 - i}`, heat: 0, pests: 0, noise: 0, other: 0 })
+      const span = Math.max(1, nowDay.getTime() - start.getTime())
+      for (const e of sr311Events) {
+        if (e.dt < start || e.dt > nowDay) continue
+        const t = e.dt.getTime() - start.getTime()
+        const pct = t / span
+        const idx = Math.min(12, Math.max(0, Math.floor(pct * 13)))
+        buckets[idx][e.key]++
+      }
+      return buckets
+    })()
+
+    // monthly36: last 36 months by month
+    const monthly36 = (() => {
+      const now = new Date()
+      const start = addMonths(new Date(now.getFullYear(), now.getMonth(), 1), -35)
+      const map = new Map<string, any>()
+      for (let i = 0; i < 36; i++) {
+        const d = addMonths(start, i)
+        const k = fmtYYYYMM(d)
+        map.set(k, { label: k, heat: 0, pests: 0, noise: 0, other: 0 })
+      }
+      for (const e of sr311Events) {
+        const k = fmtYYYYMM(e.dt)
+        const row = map.get(k)
+        if (row) row[e.key]++
+      }
+      return Array.from(map.values())
+    })()
+
+    const signals = {
+      windows: {
+        '30d': countWindow(30),
+        '90d': countWindow(90),
+        '1y': countWindow(365),
+        '3y': countWindow(365 * 3),
+      },
+      series: { daily30, weekly90, monthly36 },
+    }
+
+
     // ========== FINAL RESPONSE ==========
     return NextResponse.json(
       {
@@ -805,6 +949,8 @@ export async function GET(req: NextRequest) {
             .slice(0, 40),
           byCategory: compBreakdown,
         },
+
+        signals,
 
         litigations: { total: hpdLit.length, open: openLit.length, totalPenalties, byType: litByType, recent: recentLit },
         charges: { total: hpdCharge.length, totalAmount: totalCharges },
