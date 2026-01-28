@@ -1,15 +1,27 @@
 import { MetadataRoute } from 'next'
-import fs from 'fs'
-import path from 'path'
+import { allRawPosts } from '@/content/blog'
 
 const baseUrl = 'https://www.buildinghealthx.com'
 
+// ALL services (you had only 5, but you have 17!)
 const services = [
   'moving-companies',
-  'renters-insurance',
-  'pest-control',
+  'packing-services',
   'storage-facilities',
+  'junk-removal',
+  'cleaning-services',
+  'real-estate-agents',
   'building-inspectors',
+  'renters-insurance',
+  'internet-providers',
+  'locksmith',
+  'furniture-assembly',
+  'painters',
+  'pest-control',
+  'hvac-repair',
+  'plumbers',
+  'electricians',
+  'mold-remediation',
 ]
 
 const locations = [
@@ -44,28 +56,28 @@ const locations = [
   'stapleton',
 ]
 
-function getBlogSlugs(): string[] {
-  try {
-    const blogDir = path.join(process.cwd(), 'content', 'blog')
-    const folders = fs.readdirSync(blogDir, { withFileTypes: true })
-    return folders
-      .filter((dirent) => dirent.isDirectory())
-      .map((dirent) => dirent.name)
-  } catch {
-    return []
-  }
-}
-
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date()
 
-  // Homepage
+  // Static pages with proper priorities
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: now,
+      changeFrequency: 'daily',
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/services`,
+      lastModified: now,
       changeFrequency: 'weekly',
-      priority: 1,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/locations`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/blog`,
@@ -73,26 +85,68 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 0.9,
     },
+    {
+      url: `${baseUrl}/blog/tags`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/news`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
   ]
 
-  // Service landing pages (174 total)
-  const servicePages: MetadataRoute.Sitemap = services.flatMap((service) =>
+  // Individual service pages (17 services)
+  const individualServicePages: MetadataRoute.Sitemap = services.map((service) => ({
+    url: `${baseUrl}/services/${service}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.85,
+  }))
+
+  // Service + Location combinations (17 services x 28 locations = 476 pages)
+  const serviceLocationPages: MetadataRoute.Sitemap = services.flatMap((service) =>
     locations.map((location) => ({
       url: `${baseUrl}/services/${service}/${location}`,
       lastModified: now,
       changeFrequency: 'monthly' as const,
-      priority: 0.8,
+      priority: 0.75,
     }))
   )
 
-  // Blog posts
-  const blogSlugs = getBlogSlugs()
-  const blogPages: MetadataRoute.Sitemap = blogSlugs.map((slug) => ({
-    url: `${baseUrl}/blog/${slug}`,
+  // Service Questions pages (17 services)
+  const serviceQuestionPages: MetadataRoute.Sitemap = services.map((service) => ({
+    url: `${baseUrl}/services/${service}/questions-to-ask`,
     lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }))
 
-  return [...staticPages, ...servicePages, ...blogPages]
+  // Individual location pages (28 locations)
+  const individualLocationPages: MetadataRoute.Sitemap = locations.map((location) => ({
+    url: `${baseUrl}/locations/${location}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }))
+
+  // Blog posts from your TypeScript files
+  const blogPages: MetadataRoute.Sitemap = allRawPosts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: post.publishedAt ? new Date(post.publishedAt) : now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }))
+
+  return [
+    ...staticPages,
+    ...individualServicePages,
+    ...serviceLocationPages,
+    ...serviceQuestionPages,
+    ...individualLocationPages,
+    ...blogPages,
+  ]
 }
