@@ -469,52 +469,6 @@ export default function ServiceLocationPage({ params }: Props) {
                   </div>
                 </div>
 
-                {/* Jump navigation */}
-                <div className="flex flex-wrap gap-2">
-                  <a href="#why-need" className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition">
-                    What you can request
-                  </a>
-                  <a href="#what-to-look-for" className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition">
-                    What to look for
-                  </a>
-                  <a href="#costs" className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition">
-                    Costs
-                  </a>
-                  <a href="#faq" className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition">
-                    FAQ
-                  </a>
-                  <Link
-                    href={`/services/${params.service}/questions-to-ask`}
-                    className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition"
-                  >
-                    Questions to ask
-                  </Link>
-                </div>
-              </section>
-
-              {/* What you can request */}
-              <section id="why-need" className="bg-[#12161f] border border-white/10 rounded-2xl p-10">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center">
-                    <CheckCircle2 className="w-6 h-6 text-blue-400" />
-                  </div>
-                  <h2 className="text-3xl font-bold">What you can request in {location.name}</h2>
-                </div>
-                <ul className="space-y-5">
-                  {service.whyNeed.map((reason, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-4 pb-5 border-b border-white/5 last:border-0 last:pb-0"
-                    >
-                      <div className="w-8 h-8 bg-blue-500/15 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                        <CheckCircle2 className="w-5 h-5 text-blue-400" />
-                      </div>
-                      <span className="text-slate-300 leading-relaxed">{reason}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-
               {/* What to Look For */}
               <section
                 id="what-to-look-for"
