@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Building2, AlertTriangle, CheckCircle, XCircle, Search, ChevronRight, ChevronLeft, Home, FileText, Users, History, Hammer, MapPin, DollarSign, Clock, Star, ThumbsUp, MessageSquare, Flame, Bug, Volume2, ShieldAlert, ExternalLink } from 'lucide-react'
+import { Building2, AlertTriangle, CheckCircle, XCircle, Search, ChevronRight, ChevronLeft, Home, FileText, Users, History, Hammer, MapPin, DollarSign, Clock, Star, ThumbsUp, MessageSquare, Flame, Bug, Volume2, ShieldAlert, ExternalLink, User, Wallet, Train, Shield, Droplet, UtensilsCrossed, Factory, Trees } from 'lucide-react'
 import ScoreLink from '@/components/ScoreLink'
 import Header from '@/components/Header'
 
