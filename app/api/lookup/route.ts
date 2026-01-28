@@ -1,3 +1,4 @@
+
 import { NextRequest, NextResponse } from 'next/server'
 import { BOROUGH_NUMBERS } from '@/lib/data-sources'
 
@@ -12,9 +13,8 @@ function padBBL(bbl: string): string {
 
 function parseAddress(input: string) {
   const cleaned = input.trim().toLowerCase()
-  let borough: string | null = null,
-    addressPart = cleaned
-
+  let borough: string | null = null, addressPart = cleaned
+  
   for (const [name, code] of Object.entries(BOROUGH_NUMBERS)) {
     if (cleaned.includes(name)) {
       borough = code
@@ -22,32 +22,19 @@ function parseAddress(input: string) {
       break
     }
   }
-
+  
   const match = addressPart.match(/^(\d+[-\d]*)\s+(.+)$/)
-  return match
-    ? {
-        houseNumber: match[1],
-        streetName: match[2].replace(/,.*$/, '').trim(),
-        borough,
-      }
-    : { houseNumber: '', streetName: addressPart, borough }
+  return match ? { houseNumber: match[1], streetName: match[2].replace(/,.*$/, '').trim(), borough } : { houseNumber: '', streetName: addressPart, borough }
 }
 
 function normalizeStreet(street: string): string {
-  return street
-    .toLowerCase()
-    .replace(/\bstreet\b/g, 'st')
-    .replace(/\bavenue\b/g, 'ave')
-    .replace(/\bplace\b/g, 'pl')
-    .replace(/\bboulevard\b/g, 'blvd')
-    .replace(/\broad\b/g, 'rd')
-    .replace(/\bdrive\b/g, 'dr')
-    .replace(/\beast\b/g, 'e')
-    .replace(/\bwest\b/g, 'w')
-    .replace(/\bnorth\b/g, 'n')
-    .replace(/\bsouth\b/g, 's')
-    .replace(/[^a-z0-9\s]/g, '')
-    .trim()
+  return street.toLowerCase()
+    .replace(/\bstreet\b/g, 'st').replace(/\bavenue\b/g, 'ave')
+    .replace(/\bplace\b/g, 'pl').replace(/\bboulevard\b/g, 'blvd')
+    .replace(/\broad\b/g, 'rd').replace(/\bdrive\b/g, 'dr')
+    .replace(/\beast\b/g, 'e').replace(/\bwest\b/g, 'w')
+    .replace(/\bnorth\b/g, 'n').replace(/\bsouth\b/g, 's')
+    .replace(/[^a-z0-9\s]/g, '').trim()
 }
 
 export async function GET(req: NextRequest) {
@@ -60,51 +47,37 @@ export async function GET(req: NextRequest) {
     // encoded correctly (including literal % wildcards).
     const safe = address.toUpperCase().replace(/'/g, "''")
     const url = new URL('https://data.cityofnewyork.us/resource/64uk-42ks.json')
+    url.searchParams.set('$where', `address LIKE '%${safe}%'`)
+    url.searchParams.set('$limit', '10')
 
-    // IMPORTANT: make matching case-insensitive
-    url.searchParams.set('$where', `upper(address) LIKE '%${safe}%'`)
-    url.searchParams.set('$limit', '12')
-
-    const res = await fetch(url.toString(), { headers: { Accept: 'application/json' } })
+    const res = await fetch(url.toString(), { headers: { 'Accept': 'application/json' } })
     let data = await res.json()
 
     // Fallback to $q search
     if (!data?.length) {
-      const fallback = await fetch(
-        `https://data.cityofnewyork.us/resource/64uk-42ks.json?$q=${encodeURIComponent(address)}&$limit=10`
-      )
+      const fallback = await fetch(`https://data.cityofnewyork.us/resource/64uk-42ks.json?$q=${encodeURIComponent(address)}&$limit=10`)
       data = await fallback.json()
     }
 
     if (!data?.length) {
-      return NextResponse.json(
-        { error: 'Address not found. Try including borough name (e.g., "123 Main St, Brooklyn")' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Address not found. Try including borough name (e.g., "123 Main St, Brooklyn")' }, { status: 404 })
     }
 
     // Find best match
     const { houseNumber, streetName, borough } = parseAddress(address)
     const normalizedInput = normalizeStreet(streetName || address)
-    let bestMatch = data[0],
-      bestScore = 0
+    let bestMatch = data[0], bestScore = 0
 
     for (const record of data) {
       if (!record.address) continue
       const recordNorm = normalizeStreet(record.address)
-
+      
       // Exact match
       if (recordNorm.includes(normalizedInput) || normalizedInput.includes(recordNorm)) {
-        const score =
-          (Math.min(recordNorm.length, normalizedInput.length) /
-            Math.max(recordNorm.length, normalizedInput.length)) *
-          100
-        if (score > bestScore) {
-          bestMatch = record
-          bestScore = score
-        }
+        const score = Math.min(recordNorm.length, normalizedInput.length) / Math.max(recordNorm.length, normalizedInput.length) * 100
+        if (score > bestScore) { bestMatch = record; bestScore = score }
       }
-
+      
       // Check house number match
       if (houseNumber && record.address.startsWith(houseNumber)) {
         bestScore = Math.max(bestScore, 75)
@@ -122,7 +95,7 @@ export async function GET(req: NextRequest) {
       address: bestMatch.address,
       borough: bestMatch.borough,
       zipcode: bestMatch.zipcode,
-      confidence: bestScore >= 80 ? 'high' : bestScore >= 50 ? 'medium' : 'low',
+      confidence: bestScore >= 80 ? 'high' : bestScore >= 50 ? 'medium' : 'low'
     })
   } catch (e) {
     console.error('Lookup error:', e)
