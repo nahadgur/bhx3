@@ -482,13 +482,32 @@ export default function BuildingPage() {
           </div>
         )}
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
-          {tabs.map(t => (
-            <button key={t.id} onClick={() => setTab(t.id as Tab)} className={`tab flex items-center gap-2 ${tab === t.id ? 'tab-active' : ''}`}>
-              <t.icon size={16} />{t.label}
-            </button>
-          ))}
+           {/* Tabs - ALTERNATIVE PILL STYLE */}
+        <div className="mb-6">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {tabs.map(t => {
+              const isActive = tab === t.id
+              const Icon = t.icon
+              
+              return (
+                <button 
+                  key={t.id} 
+                  onClick={() => setTab(t.id as Tab)} 
+                  className={`
+                    flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm
+                    transition-all whitespace-nowrap border
+                    ${isActive
+                      ? 'bg-blue-500 border-blue-500 text-white shadow-lg shadow-blue-500/20'
+                      : 'bg-[var(--bg-card)] border-[var(--border-primary)] text-[var(--text-secondary)] hover:text-white hover:bg-[var(--bg-hover)] hover:border-[var(--border-secondary)]'
+                    }
+                  `}
+                >
+                  <Icon size={16} />
+                  <span>{t.label}</span>
+                </button>
+              )
+            })}
+          </div>
         </div>
         
         {/* OVERVIEW TAB */}
@@ -518,7 +537,7 @@ export default function BuildingPage() {
                 </div>
               </div>
             </div>
-
+            
             {/* At-a-glance signals */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="card p-5 stat-yellow">
