@@ -246,18 +246,19 @@ export default function HomePage() {
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="mb-6 sm:mb-8">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text mb-3 sm:mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text">
               Building Health X
             </h2>
-            <p className="text-xs sm:text-sm md:text-base text-[var(--text-secondary)] leading-relaxed max-w-2xl mx-auto px-4">
-              Building Health X turns NYC open data into a clear, decision-first summary: recent heat/hot water issues, pests, noise, safety hazards, and resident reviews. Pick a time window (30/90 days, 1 year, 3 years) and see what's changing.
-            </p>
           </div>
           
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 sm:mb-4 md:mb-6 leading-tight">
             Know Before You Move In{' '}
             <span className="gradient-text block mt-1 sm:mt-2">Search Any NYC Building</span>
           </h1>
+          
+          <p className="text-xs sm:text-sm md:text-base text-[var(--text-secondary)] leading-relaxed max-w-2xl mx-auto px-4 mb-6 sm:mb-8">
+            Building Health X turns NYC open data into a clear, decision-first summary: recent heat/hot water issues, pests, noise, safety hazards, and resident reviews. Pick a time window (30/90 days, 1 year, 3 years) and see what's changing.
+          </p>
           <p className="text-sm sm:text-base md:text-lg lg:text-xl text-[var(--text-secondary)] mb-6 sm:mb-8 max-w-2xl mx-auto px-2">
             Instantly access safety violations, complaints, permits, and more from official NYC data sources
           </p>
