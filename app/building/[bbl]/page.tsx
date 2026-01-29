@@ -21,7 +21,6 @@ type Tab = 'overview' | 'violations' | 'complaints' | 'timeline' | 'landlord' | 
 
 type RangeKey = '30d' | '90d' | '1y' | '3y'
 
-}
 
 // Recharts is generally stable, but a single unexpected value can occasionally
 // trigger a runtime error that would otherwise take down the whole page.
