@@ -256,11 +256,8 @@ export default function HomePage() {
             <span className="gradient-text block mt-1 sm:mt-2">Search Any NYC Building</span>
           </h1>
           
-          <p className="text-xs sm:text-sm md:text-base text-[var(--text-secondary)] leading-relaxed max-w-2xl mx-auto px-4 mb-6 sm:mb-8">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-[var(--text-secondary)] mb-6 sm:mb-8 max-w-2xl mx-auto px-2 leading-relaxed">
             Building Health X turns NYC open data into a clear, decision-first summary: recent heat/hot water issues, pests, noise, safety hazards, and resident reviews. Pick a time window (30/90 days, 1 year, 3 years) and see what's changing.
-          </p>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-[var(--text-secondary)] mb-6 sm:mb-8 max-w-2xl mx-auto px-2">
-            Instantly access safety violations, complaints, permits, and more from official NYC data sources
           </p>
 
           {/* UNIVERSAL RESPONSIVE SEARCH BOX */}
