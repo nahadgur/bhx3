@@ -256,16 +256,37 @@ export default function HomePage() {
           {/* UNIVERSAL RESPONSIVE SEARCH BOX */}
           <div className="max-w-2xl mx-auto">
             <form onSubmit={handleSubmit} className="relative" ref={dropdownRef}>
-              <div className="relative">
-                <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 pointer-events-none" />
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Enter NYC address..."
-                  className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-3.5 md:py-4 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base transition-all"
-                />
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Enter NYC address..."
+                    className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-3.5 md:py-4 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base transition-all"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="cta-super flex items-center gap-2 flex-shrink-0 disabled:opacity-50 whitespace-nowrap"
+                >
+                  {loading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span className="hidden sm:inline">Loading</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="!hidden sm:!inline">Check Building</span>
+                      <span className="!inline sm:!hidden">Check</span>
+                      <ChevronRight className="w-5 h-5" />
+                    </>
+                  )}
+                </button>
               </div>
 
               {showDropdown && suggestions.length > 0 && (
@@ -289,14 +310,6 @@ export default function HomePage() {
                   ))}
                 </div>
               )}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full sm:w-auto mt-3 sm:mt-4 px-6 sm:px-8 py-3 sm:py-3.5 md:py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all text-sm sm:text-base shadow-lg hover:shadow-xl disabled:shadow-none"
-              >
-                {loading ? 'Searching...' : 'Check Building'}
-              </button>
             </form>
 
             {/* UNIVERSAL RESPONSIVE LOADING SCREEN */}
