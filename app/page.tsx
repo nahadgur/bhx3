@@ -39,7 +39,7 @@ export default function HomePage() {
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
   const router = useRouter()
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const dropdownRef = useRef<HTMLFormElement>(null)
   const abortRef = useRef<AbortController | null>(null)
   const reqSeqRef = useRef(0)
 
