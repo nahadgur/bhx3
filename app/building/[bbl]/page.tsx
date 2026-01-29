@@ -164,14 +164,6 @@ export default function BuildingPage() {
     pendingScrollRef.current = { tab: nextTab, sectionId }
   }
   
-  // Reviews state
-  const [reviews, setReviews] = useState<Review[]>([])
-  const [reviewsData, setReviewsData] = useState<{ count: number, averageRating: number, distribution: Record<number, number> }>({ count: 0, averageRating: 0, distribution: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 } })
-  const [showReviewForm, setShowReviewForm] = useState(false)
-  const [reviewForm, setReviewForm] = useState({ rating: 5, title: '', review: '', pros: '', cons: '', lived_here: false, years_lived: '', author_name: '', email: '', phone: '', website: '' })
-  const [submittingReview, setSubmittingReview] = useState(false)
-  const [reviewError, setReviewError] = useState('')
-  const [votedReviews, setVotedReviews] = useState<Set<string>>(new Set())
 
   // IMPORTANT: Hooks must run on every render. Keep all hook calls above any
   // conditional returns (loading/error screens). A production crash we saw
