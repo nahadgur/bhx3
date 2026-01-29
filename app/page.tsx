@@ -256,7 +256,7 @@ export default function HomePage() {
           {/* UNIVERSAL RESPONSIVE SEARCH BOX */}
           <div className="max-w-3xl mx-auto">
             <form onSubmit={handleSubmit} className="relative" ref={dropdownRef}>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <div className="relative w-full sm:flex-1">
                   <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 pointer-events-none" />
                   <input
@@ -269,24 +269,26 @@ export default function HomePage() {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="cta-super flex items-center gap-2 justify-center flex-shrink-0 disabled:opacity-50 whitespace-nowrap w-auto"
-                >
-                  {loading ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span className="hidden sm:inline">Loading</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="!hidden sm:!inline">Check Building</span>
-                      <span className="!inline sm:!hidden">Check</span>
-                      <ChevronRight className="w-5 h-5" />
-                    </>
-                  )}
-                </button>
+                <div className="w-full sm:w-auto flex justify-center sm:justify-start">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="cta-super flex items-center gap-2 justify-center flex-shrink-0 disabled:opacity-50 whitespace-nowrap"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span className="hidden sm:inline">Loading</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="!hidden sm:!inline">Check Building</span>
+                        <span className="!inline sm:!hidden">Check</span>
+                        <ChevronRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               {showDropdown && suggestions.length > 0 && (
