@@ -194,7 +194,7 @@ export default function BuildingPage() {
       const qs = new URLSearchParams(window.location.search)
       const t = (qs.get('tab') || '').toLowerCase()
       const sectionId = qs.get('section') || undefined
-      const allowed: Tab[] = ['overview', 'violations', 'complaints', 'timeline', 'landlord', 'permits', 'sales', 'neighborhood', 'reviews']
+      const allowed: Tab[] = ['overview', 'violations', 'complaints', 'timeline', 'landlord', 'permits', 'sales', 'neighborhood']
       if (allowed.includes(t as Tab)) {
         setTab(t as Tab)
         pendingScrollRef.current = { tab: t as Tab, sectionId }
@@ -240,56 +240,6 @@ export default function BuildingPage() {
     if (bbl) load()
   }, [bbl])
   
-  // Fetch reviews
-  useEffect(() => {
-    async function loadReviews() {
-      try {
-        const res = await fetch(`/api/reviews?bbl=${bbl}`)
-        const json = await res.json()
-        if (!json.error) {
-          setReviews(json.reviews || [])
-          setReviewsData({ count: json.count, averageRating: json.averageRating, distribution: json.distribution })
-        }
-      } catch (e) { console.error('Failed to load reviews', e) }
-    }
-    if (bbl) loadReviews()
-  }, [bbl])
-  
-  const submitReview = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmittingReview(true)
-    setReviewError('')
-    try {
-      const res = await fetch('/api/reviews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bbl, ...reviewForm })
-      })
-      const json = await res.json()
-      if (json.error) {
-        setReviewError(json.error)
-      } else {
-        setReviews([json.review, ...reviews])
-        setReviewsData(prev => ({ ...prev, count: prev.count + 1, averageRating: ((prev.averageRating * prev.count) + reviewForm.rating) / (prev.count + 1) }))
-        setShowReviewForm(false)
-        setReviewForm({ rating: 5, title: '', review: '', pros: '', cons: '', lived_here: false, years_lived: '', author_name: '', email: '', phone: '', website: '' })
-      }
-    } catch { setReviewError('Failed to submit review') }
-    finally { setSubmittingReview(false) }
-  }
-  
-  const voteHelpful = async (reviewId: string) => {
-    if (votedReviews.has(reviewId)) return
-    try {
-      await fetch('/api/reviews/helpful', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reviewId })
-      })
-      setVotedReviews(new Set([...Array.from(votedReviews), reviewId]))
-      setReviews(reviews.map(r => r.id === reviewId ? { ...r, helpful_count: r.helpful_count + 1 } : r))
-    } catch (e) { console.error('Vote failed', e) }
-  }
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -368,7 +318,6 @@ export default function BuildingPage() {
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: Home },
-    { id: 'reviews', label: `Reviews${reviewsData.count > 0 ? ` (${reviewsData.count})` : ''}`, icon: MessageSquare },
     { id: 'violations', label: 'Violations', icon: AlertTriangle },
     { id: 'complaints', label: 'Complaints', icon: FileText },
     { id: 'timeline', label: 'Timeline', icon: History },
@@ -1210,214 +1159,6 @@ export default function BuildingPage() {
                   ))}
                 </div>
               )}
-            </div>
-          </div>
-        )}
-
-        {/* REVIEWS TAB */}
-        {tab === 'reviews' && (
-          <div className="space-y-6 animate-fade-in">
-            {/* Reviews Summary */}
-            <div className="card p-6">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                <div className="flex items-center gap-6">
-                  <div className="text-center">
-                    <div className="text-5xl font-bold text-white">{reviewsData.averageRating.toFixed(1)}</div>
-                    <div className="flex items-center justify-center gap-1 mt-2">
-                      {[1,2,3,4,5].map(star => (
-                        <Star key={star} size={20} className={star <= Math.round(reviewsData.averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-[#4a5568]'} />
-                      ))}
-                    </div>
-                    <div className="text-sm text-[#64748b] mt-1">{reviewsData.count} review{reviewsData.count !== 1 ? 's' : ''}</div>
-                  </div>
-                  <div className="space-y-1">
-                    {[5,4,3,2,1].map(rating => (
-                      <div key={rating} className="flex items-center gap-2">
-                        <span className="text-xs w-3">{rating}</span>
-                        <Star size={12} className="text-yellow-400 fill-yellow-400" />
-                        <div className="w-24 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                          <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${reviewsData.count > 0 ? (reviewsData.distribution[rating] / reviewsData.count) * 100 : 0}%` }} />
-                        </div>
-                        <span className="text-xs text-[#64748b] w-6">{reviewsData.distribution[rating]}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <button onClick={() => setShowReviewForm(!showReviewForm)} className="px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-xl font-semibold flex items-center gap-2">
-                  <MessageSquare size={18} />
-                  Write a Review
-                </button>
-              </div>
-            </div>
-
-            {/* Review Form */}
-            {showReviewForm && (
-              <div className="card p-6 border-2 border-blue-500/30 animate-fade-in">
-                <h3 className="font-bold text-lg mb-6">Share Your Experience</h3>
-                <form onSubmit={submitReview} className="space-y-6">
-                  {/* Rating */}
-                  <div>
-                    <label className="block text-sm text-[#94a3b8] mb-2">Your Rating *</label>
-                    <div className="flex items-center gap-2">
-                      {[1,2,3,4,5].map(star => (
-                        <button key={star} type="button" onClick={() => setReviewForm({...reviewForm, rating: star})} className="p-1 hover:scale-110 transition-transform">
-                          <Star size={32} className={star <= reviewForm.rating ? 'text-yellow-400 fill-yellow-400' : 'text-[#4a5568] hover:text-yellow-400'} />
-                        </button>
-                      ))}
-                      <span className="ml-2 text-[#64748b]">{reviewForm.rating === 1 ? 'Terrible' : reviewForm.rating === 2 ? 'Poor' : reviewForm.rating === 3 ? 'Average' : reviewForm.rating === 4 ? 'Good' : 'Excellent'}</span>
-                    </div>
-                  </div>
-
-                  {/* Title */}
-                  <div>
-                    <label className="block text-sm text-[#94a3b8] mb-2">Review Title</label>
-                    <input type="text" value={reviewForm.title} onChange={e => setReviewForm({...reviewForm, title: e.target.value})} placeholder="Summarize your experience" className="w-full p-3 bg-[#151c2c] border border-[#1e293b] rounded-xl text-white placeholder-[#4a5568] focus:outline-none focus:border-blue-500/50" maxLength={100} />
-                  </div>
-
-                  {/* Review Text */}
-                  <div>
-                    <label className="block text-sm text-[#94a3b8] mb-2">Your Review *</label>
-                    <textarea value={reviewForm.review} onChange={e => setReviewForm({...reviewForm, review: e.target.value})} placeholder="Tell others about your experience living here. What did you like? What could be better?" rows={4} className="w-full p-3 bg-[#151c2c] border border-[#1e293b] rounded-xl text-white placeholder-[#4a5568] focus:outline-none focus:border-blue-500/50 resize-none" minLength={10} required />
-                  </div>
-
-                  {/* Pros & Cons */}
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm text-[#94a3b8] mb-2">👍 Pros</label>
-                      <textarea value={reviewForm.pros} onChange={e => setReviewForm({...reviewForm, pros: e.target.value})} placeholder="What did you like?" rows={2} className="w-full p-3 bg-[#151c2c] border border-[#1e293b] rounded-xl text-white placeholder-[#4a5568] focus:outline-none focus:border-blue-500/50 resize-none" />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-[#94a3b8] mb-2">👎 Cons</label>
-                      <textarea value={reviewForm.cons} onChange={e => setReviewForm({...reviewForm, cons: e.target.value})} placeholder="What could be better?" rows={2} className="w-full p-3 bg-[#151c2c] border border-[#1e293b] rounded-xl text-white placeholder-[#4a5568] focus:outline-none focus:border-blue-500/50 resize-none" />
-                    </div>
-                  </div>
-
-                  {/* Lived Here & Years */}
-                  <div className="flex flex-wrap items-center gap-6">
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input type="checkbox" checked={reviewForm.lived_here} onChange={e => setReviewForm({...reviewForm, lived_here: e.target.checked})} className="w-5 h-5 rounded border-[#1e293b] bg-[#151c2c] text-blue-500 focus:ring-blue-500" />
-                      <span className="text-[#94a3b8]">I live/lived here</span>
-                    </label>
-                    {reviewForm.lived_here && (
-                      <select value={reviewForm.years_lived} onChange={e => setReviewForm({...reviewForm, years_lived: e.target.value})} className="p-2 bg-[#151c2c] border border-[#1e293b] rounded-lg text-white focus:outline-none focus:border-blue-500/50">
-                        <option value="">How long?</option>
-                        <option value="< 1 year">Less than 1 year</option>
-                        <option value="1-2 years">1-2 years</option>
-                        <option value="2-5 years">2-5 years</option>
-                        <option value="5+ years">5+ years</option>
-                      </select>
-                    )}
-                  </div>
-
-                  {/* Author Name */}
-                  <div>
-                    <label className="block text-sm text-[#94a3b8] mb-2">Your Name (optional)</label>
-                    <input type="text" value={reviewForm.author_name} onChange={e => setReviewForm({...reviewForm, author_name: e.target.value})} placeholder="Anonymous" className="w-full sm:w-64 p-3 bg-[#151c2c] border border-[#1e293b] rounded-xl text-white placeholder-[#4a5568] focus:outline-none focus:border-blue-500/50" maxLength={50} />
-                  </div>
-
-                  {/* Honeypot (hidden) */}
-                  <div className="sr-only" aria-hidden="true">
-                    <label htmlFor="website">Website</label>
-                    <input
-                      id="website"
-                      type="text"
-                      value={reviewForm.website}
-                      onChange={e => setReviewForm({ ...reviewForm, website: e.target.value })}
-                      autoComplete="off"
-                      tabIndex={-1}
-                    />
-                  </div>
-
-                  {/* Contact Details (Required but not displayed publicly) */}
-                  <div className="p-4 bg-[#151c2c] rounded-xl border border-[#1e293b]">
-                    <p className="text-sm text-[#94a3b8] mb-4">
-                      📧 Contact details help verify reviews and reduce spam. They will <strong>never be displayed publicly</strong>, and we won’t reach out unless verification is needed.
-                    </p>
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm text-[#94a3b8] mb-2">Email Address *</label>
-                        <input type="email" value={reviewForm.email} onChange={e => setReviewForm({...reviewForm, email: e.target.value})} placeholder="your@email.com" className="w-full p-3 bg-[#0a0e17] border border-[#1e293b] rounded-xl text-white placeholder-[#4a5568] focus:outline-none focus:border-blue-500/50" required />
-                      </div>
-                      <div>
-                        <label className="block text-sm text-[#94a3b8] mb-2">Phone Number *</label>
-                        <input type="tel" value={reviewForm.phone} onChange={e => setReviewForm({...reviewForm, phone: e.target.value})} placeholder="(555) 123-4567" className="w-full p-3 bg-[#0a0e17] border border-[#1e293b] rounded-xl text-white placeholder-[#4a5568] focus:outline-none focus:border-blue-500/50" required />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Error & Submit */}
-                  {reviewError && <p className="text-red-400 text-sm">{reviewError}</p>}
-                  <div className="flex items-center gap-4">
-                    <button type="submit" disabled={submittingReview} className="px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 rounded-xl font-semibold flex items-center gap-2">
-                      {submittingReview ? 'Submitting...' : 'Submit Review'}
-                    </button>
-                    <button type="button" onClick={() => setShowReviewForm(false)} className="px-6 py-3 bg-[#1e293b] hover:bg-[#2d3748] rounded-xl">Cancel</button>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {/* Reviews List */}
-            <div className="space-y-4">
-              {reviews.length === 0 ? (
-                <div className="card p-12 text-center">
-                  <MessageSquare className="w-16 h-16 text-[#4a5568] mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">No reviews yet</h3>
-                  <p className="text-[#64748b] mb-6">Be the first to share your experience living in this building!</p>
-                  <button onClick={() => setShowReviewForm(true)} className="px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-xl font-semibold">Write a Review</button>
-                </div>
-              ) : reviews.map(review => (
-                <div key={review.id} className="card p-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="flex items-center">
-                          {[1,2,3,4,5].map(star => (
-                            <Star key={star} size={16} className={star <= review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-[#4a5568]'} />
-                          ))}
-                        </div>
-                        {review.lived_here && (
-                          <span className="badge badge-green flex items-center gap-1">
-                            <CheckCircle size={12} /> Verified Resident
-                          </span>
-                        )}
-                      </div>
-                      {review.title && <h4 className="font-semibold text-lg">{review.title}</h4>}
-                    </div>
-                    <div className="text-right text-sm text-[#64748b]">
-                      <div>{review.author_name}</div>
-                      <div>{new Date(review.created_at).toLocaleDateString()}</div>
-                      {review.years_lived && <div className="text-xs">Lived here: {review.years_lived}</div>}
-                    </div>
-                  </div>
-                  
-                  <p className="text-[#e2e8f0] mb-4 whitespace-pre-wrap">{review.review}</p>
-                  
-                  {(review.pros || review.cons) && (
-                    <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                      {review.pros && (
-                        <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                          <div className="text-xs text-green-400 font-semibold mb-1">👍 PROS</div>
-                          <p className="text-sm text-[#e2e8f0]">{review.pros}</p>
-                        </div>
-                      )}
-                      {review.cons && (
-                        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                          <div className="text-xs text-red-400 font-semibold mb-1">👎 CONS</div>
-                          <p className="text-sm text-[#e2e8f0]">{review.cons}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center gap-4 pt-3 border-t border-[#1e293b]">
-                    <button onClick={() => voteHelpful(review.id)} disabled={votedReviews.has(review.id)} className={`flex items-center gap-2 text-sm ${votedReviews.has(review.id) ? 'text-blue-400' : 'text-[#64748b] hover:text-white'}`}>
-                      <ThumbsUp size={16} className={votedReviews.has(review.id) ? 'fill-blue-400' : ''} />
-                      Helpful ({review.helpful_count})
-                    </button>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         )}
