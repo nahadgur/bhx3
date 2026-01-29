@@ -245,26 +245,34 @@ export default function HomePage() {
         </div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="mb-6 sm:mb-8">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text">
-              Building Health X
-            </h2>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/10 to-emerald-500/10 border border-blue-500/20 rounded-full mb-6 sm:mb-8">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+            <span className="text-xs sm:text-sm font-medium text-[var(--text-secondary)]">
+              Trusted by <span className="text-[var(--text-primary)] font-semibold">10,000+</span> NYC renters
+            </span>
           </div>
           
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 sm:mb-4 md:mb-6 leading-tight">
-            Know Before You Move In{' '}
-            <span className="gradient-text block mt-1 sm:mt-2">Search Any NYC Building</span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 md:mb-6 leading-tight">
+            Research Any NYC Building{' '}
+            <span className="gradient-text block mt-1 sm:mt-2">Before You Sign the Lease</span>
           </h1>
           
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-[var(--text-secondary)] mb-6 sm:mb-8 max-w-2xl mx-auto px-2 leading-relaxed">
-            Building Health X turns NYC open data into a clear, decision-first summary: recent heat/hot water issues, pests, noise, safety hazards, and resident reviews. Pick a time window (30/90 days, 1 year, 3 years) and see what's changing.
+          <p className="text-sm sm:text-base md:text-lg text-[var(--text-secondary)] mb-6 sm:mb-8 max-w-3xl mx-auto px-2 leading-relaxed">
+            Stop gambling on your next apartment. Search any address and instantly see{' '}
+            <span className="text-[var(--text-primary)] font-medium">violations</span>,{' '}
+            <span className="text-[var(--text-primary)] font-medium">pest history</span>,{' '}
+            <span className="text-[var(--text-primary)] font-medium">heat complaints</span>, and{' '}
+            <span className="text-[var(--text-primary)] font-medium">real tenant reviews</span>, all pulled from official NYC data.
           </p>
 
           {/* UNIVERSAL RESPONSIVE SEARCH BOX */}
           <div className="max-w-3xl mx-auto">
             <form onSubmit={handleSubmit} className="relative" ref={dropdownRef}>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <div className="relative w-full sm:flex-1">
+              <div className="flex flex-row gap-2 sm:gap-3 md:gap-4">
+                <div className="relative flex-1">
                   <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 pointer-events-none" />
                   <input
                     type="text"
@@ -276,26 +284,24 @@ export default function HomePage() {
                   />
                 </div>
 
-                <div className="w-full sm:w-auto flex justify-center sm:justify-start">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="cta-super flex items-center gap-2 justify-center flex-shrink-0 disabled:opacity-50 whitespace-nowrap"
-                  >
-                    {loading ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        <span className="hidden sm:inline">Loading</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="!hidden sm:!inline">Check Building</span>
-                        <span className="!inline sm:!hidden">Check</span>
-                        <ChevronRight className="w-5 h-5" />
-                      </>
-                    )}
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="cta-super flex items-center gap-2 justify-center flex-shrink-0 disabled:opacity-50 whitespace-nowrap"
+                >
+                  {loading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span className="hidden sm:inline">Loading</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="!hidden sm:!inline">Check Building</span>
+                      <span className="!inline sm:!hidden">Check</span>
+                      <ChevronRight className="w-5 h-5" />
+                    </>
+                  )}
+                </button>
               </div>
 
               {showDropdown && suggestions.length > 0 && (
