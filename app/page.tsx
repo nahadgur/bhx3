@@ -238,7 +238,7 @@ export default function HomePage() {
       <Header />
 
       {/* HERO - FULLY RESPONSIVE */}
-      <section className="relative pt-12 sm:pt-16 md:pt-20 pb-16 sm:pb-24 md:pb-32 px-4 sm:px-6 overflow-hidden">
+      <section className="relative min-h-[calc(100vh-80px)] flex items-center justify-center pt-20 pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] bg-blue-500/10 rounded-full blur-3xl top-0 -left-10 sm:-left-20 md:-left-48 animate-pulse" />
           <div className="absolute w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] bg-emerald-500/10 rounded-full blur-3xl bottom-0 -right-10 sm:-right-20 md:-right-48 animate-pulse delay-1000" />
