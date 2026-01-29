@@ -254,10 +254,10 @@ export default function HomePage() {
           </p>
 
           {/* UNIVERSAL RESPONSIVE SEARCH BOX */}
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-3xl mx-auto">
             <form onSubmit={handleSubmit} className="relative" ref={dropdownRef}>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <div className="relative flex-1">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center">
+                <div className="relative w-full sm:flex-1">
                   <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 pointer-events-none" />
                   <input
                     type="text"
@@ -272,7 +272,7 @@ export default function HomePage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="cta-super flex items-center gap-2 flex-shrink-0 disabled:opacity-50 whitespace-nowrap"
+                  className="cta-super flex items-center gap-2 justify-center flex-shrink-0 disabled:opacity-50 whitespace-nowrap w-auto"
                 >
                   {loading ? (
                     <>
